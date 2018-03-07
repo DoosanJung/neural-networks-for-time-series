@@ -123,25 +123,25 @@ def residual_analysis(model):
 
 
 if __name__=="__main__":
-    # df = get_monthly_data()
-    #
-    # # you need to provide starting_year and ending_year for plot_zoom_in
-    # EDA(df, show_average = True, plot_overall_data = True, plot_zoom_in = True)
-    # EDA(df, superimpose = True)
-    #
-    # # fit the overall trend with increasing polynomial terms
-    # # compare AIC or BIC
-    # aics = {}
-    # bics = {}
-    # for n in xrange(1,4):
-    #     ols = RunOLS(get_monthly_data(), order=n)
-    #     ols.run_ols(y_col='num_births', x_col='time')
-    #     aics['order_{}'.format(n)] = ols.model.aic
-    #     bics['order_{}'.format(n)] = ols.model.bic
-    # print "AICs with additional orders: ", aics
-    # print "BICs with additional orders: ", bics
-    #
-    # # add seasonal_component to the model
+    df = get_monthly_data()
+
+    # you need to provide starting_year and ending_year for plot_zoom_in
+    EDA(df, show_average = True, plot_overall_data = True, plot_zoom_in = True)
+    EDA(df, superimpose = True)
+
+    # fit the overall trend with increasing polynomial terms
+    # compare AIC or BIC
+    aics = {}
+    bics = {}
+    for n in xrange(1,4):
+        ols = RunOLS(get_monthly_data(), order=n)
+        ols.run_ols(y_col='num_births', x_col='time')
+        aics['order_{}'.format(n)] = ols.model.aic
+        bics['order_{}'.format(n)] = ols.model.bic
+    print "AICs with additional orders: ", aics
+    print "BICs with additional orders: ", bics
+
+    # add seasonal_component to the model
     ols = RunOLS(get_monthly_data(), order=3, seasonal_component='months')
     ols.run_ols(y_col='num_births', x_col='time')
     print "AIC with seasonal component: ", ols.model.aic
