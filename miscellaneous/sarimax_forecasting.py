@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 '''
+Just to study time series analysis..
+I modified the code a bit
 reference: http://www.statsmodels.org/dev/examples/notebooks/generated/statespace_sarimax_stata.html
 '''
+
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
