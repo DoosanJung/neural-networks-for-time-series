@@ -41,10 +41,10 @@ class CoinTossExample(object):
         self.p = 0.5 # unbiased
         self.true_p = true_p # potentially biased
 
-    def show_sample_data_size(self):
+    def get_sample_data_size(self):
         print("sample data size: {}".format(self.n))
 
-    def show_true_p(self):
+    def get_true_p(self):
         print("actual value of p for coin: {}".format(self.true_p))
 
 class CoinTossData(CoinTossExample):
@@ -54,6 +54,13 @@ class CoinTossData(CoinTossExample):
         self.heads = sum(self.results)
         print("We observed %s heads out of %s"%(self.heads,self.n))
 
+    def get_results(self):
+        print("Realized result: {}".format(self.results))
+
+    def get_true_p(self):
+        print("The number of heads: {}".format(self.heads))
+
+class CoinTossEDA(CoinTossData):
     def expected_distn_unbiased(self):
         rv = scs.binom(self.n, self.p)
         mu = rv.mean()
@@ -77,9 +84,10 @@ class CoinTossData(CoinTossExample):
         print("Bootstrap CI: (%.4f, %.4f)" % (bs_ps[int(0.025*n_samples)], bs_ps[int(0.975*n_samples)]))
 
 class InferPyMC3(CoinTossData):
+
     def infer_with_pymc3(self):
         print("n = {}".format(self.n))
-        print("h = {}".format(self.heads))
+        print("heads = {}".format(self.heads))
         self.alpha = 2
         self.beta = 2
 
@@ -115,7 +123,7 @@ if __name__=="__main__":
 
     print(" ")
     print("prepare the sample data with {}...".format(true_p))
-    data = CoinTossData(n=1000, true_p = true_p)
+    data = CoinTossEDA(n=1000, true_p = true_p)
     data.expected_distn_unbiased()
     data.p_value_by_simulation(n_simulation=100000)
     data.p_value_by_test()
