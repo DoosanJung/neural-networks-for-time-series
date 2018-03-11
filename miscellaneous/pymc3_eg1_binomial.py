@@ -16,10 +16,7 @@ Box's loop:
        <------------------------'
 
 '''
-
-import os,sys
 import numpy as np
-import pandas as pd
 import pymc3 as pm
 import scipy.stats as scs
 import matplotlib.pyplot as plt
