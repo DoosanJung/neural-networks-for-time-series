@@ -102,14 +102,14 @@ class InferPyMC3(CoinTossData):
             self.trace = pm.sample(n_iteration, step, start, random_seed=123, progressbar=True)
 
     def plot(self, show=True):
-        fig = plt.figure(figsize=(10,8))
-        ax = fig.add_subplot(111)
-
-        ax.hist(self.trace['p'], 15, histtype='step', normed=True, label='post');
-        x = np.linspace(0, 1, 100)
-        ax.plot(x, scs.beta.pdf(x, self.alpha, self.beta), label='prior');
-        ax.legend(loc='best');
         if show == True:
+            fig = plt.figure(figsize=(10,8))
+            ax = fig.add_subplot(111)
+
+            ax.hist(self.trace['p'], 15, histtype='step', normed=True, label='post');
+            x = np.linspace(0, 1, 100)
+            ax.plot(x, scs.beta.pdf(x, self.alpha, self.beta), label='prior');
+            ax.legend(loc='best');
             plt.show()
 
 if __name__=="__main__":
