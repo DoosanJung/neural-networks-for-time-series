@@ -12,7 +12,9 @@ from keras import layers
 from keras import optimizers
 from keras import losses
 from keras import metrics
+from keras import regularizers
 import matplotlib.pyplot as plt
+import argparse
 from util import DecodeKerasString
 
 class BinaryClassification(object):
@@ -74,6 +76,47 @@ class BinaryClassification(object):
         self.model.compile(optimizer=optimizers.RMSprop(lr=0.001),
               loss='binary_crossentropy',
               metrics=[metrics.binary_accuracy])
+    
+    def build_regularized_model(self):
+        """
+        other options are:
+        regularizers.l1(0.001)
+        regularizers.l1_l2(l1=0.001, l2=0.001). 
+        
+        Implementation is as follows:
+            if self.l1:
+                regularization += K.sum(self.l1 * K.abs(x))
+            if self.l2:
+                regularization += K.sum(self.l2 * K.square(x))
+        https://github.com/keras-team/keras/blob/master/keras/regularizers.py
+        """
+        print("add L2 penalty to all layers")
+        self.model = models.Sequential()
+        self.model.add(layers.Dense(16, kernel_regularizer=regularizers.l2(0.001),
+                                    activation='relu', input_shape=(10000,)))
+        self.model.add(layers.Dense(16, kernel_regularizer=regularizers.l2(0.001),
+                                    activation='relu'))
+        self.model.add(layers.Dense(1, activation='sigmoid'))
+        self.model.compile(optimizer=optimizers.RMSprop(lr=0.001),
+              loss='binary_crossentropy',
+              metrics=[metrics.binary_accuracy])
+
+    def build_dropout_model(self):
+        """
+        The "dropout rate" is the fraction of the features that are being zeroed-out; 
+        it is usually set between 0.2 and 0.5. At test time, no units are dropped out, 
+        and instead the layer's output values are scaled down by a factor equal to the dropout rate.
+        """
+        print("add dropout layers")
+        self.model = models.Sequential()
+        self.model.add(layers.Dense(16, activation='relu', input_shape=(10000,)))
+        self.model.add(layers.Dropout(0.5))
+        self.model.add(layers.Dense(16, activation='relu'))
+        self.model.add(layers.Dropout(0.5))
+        self.model.add(layers.Dense(1, activation='sigmoid'))
+        self.model.compile(optimizer=optimizers.RMSprop(lr=0.001),
+              loss='binary_crossentropy',
+              metrics=[metrics.binary_accuracy])
 
     def partially_validate_model(self, show=True):
         """
@@ -118,6 +161,7 @@ class BinaryClassification(object):
             plt.legend()
 
             plt.show()
+            
         if show == True:      
             show_val_result(history)
 
@@ -131,6 +175,11 @@ class BinaryClassification(object):
         return self.model.predict(self.x_test)
 
 if __name__=="__main__":
+    parser = argparse.ArgumentParser()
+    regularization_group = parser.add_mutually_exclusive_group()
+    regularization_group.add_argument("-l2", "--l2", help="add L2 Penalty", action="store_true")
+    regularization_group.add_argument("-d", "--dropout", help="add Dropout layers", action="store_true")
+    args = parser.parse_args()
     print("keras.__version__: ", keras.__version__)
     print("Backend TensorFlow __version__: ", K.tensorflow_backend.tf.__version__)
 
@@ -153,7 +202,12 @@ if __name__=="__main__":
     binary_classification = BinaryClassification()
     binary_classification.load_data(train_data, train_labels, test_data, test_labels)
     binary_classification.preprocessing()
-    binary_classification.build_model()
+    if args.l2:
+        binary_classification.build_regularized_model()
+    elif args.dropout:
+        binary_classification.build_dropout_model()
+    else:
+        binary_classification.build_model()
     binary_classification.partially_validate_model()
     binary_classification.train_model()
     test_loss, test_acc = binary_classification.test_model()
