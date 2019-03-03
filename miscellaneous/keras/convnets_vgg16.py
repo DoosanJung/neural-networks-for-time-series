@@ -260,13 +260,13 @@ if __name__=="__main__":
         print("method: ", method)
         convnets.build_model(method=method)
         convnets.preprocessing(train_dir, validation_dir, test_dir, method, batch_size=20)
-        convnets.train_model(epochs=1, save=True)
+        convnets.train_model(method=method, epochs=100, batch_size=20, save=False)
         convnets.partially_validate_model(show=True, smooth=False)
 
     #fine tune example
     print("A fine tuning example.")
     convnets.fine_tune_model()
-    convnets.train_model(method="extend", epochs=1, batch_size=20, save=False)
+    convnets.train_model(method="extend", epochs=100, batch_size=20, save=False)
     convnets.partially_validate_model(show=True, smooth=True)
     test_loss, test_acc = convnets.test_model()
     
