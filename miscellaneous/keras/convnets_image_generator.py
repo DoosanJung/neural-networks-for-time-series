@@ -4,13 +4,11 @@
 * I bought this book. I modified the example code a bit to confirm my understanding.
 '''
 import keras
-import os, shutil
+import os
 from keras import backend as K
 from keras import models
 from keras import layers
 from keras import optimizers
-from keras import losses
-from keras import metrics
 import matplotlib.pyplot as plt
 # keras.preprocessing.image.ImageDataGenerator
 # Python generators that can automatically turn image files on disk 
@@ -34,7 +32,6 @@ class ConvnetsFromImageGen(object):
             - fill_mode is the strategy used for filling in newly created pixels, which can appear after a rotation or a width/height shift.
             
             => The inputs that it sees are still heavily intercorrelated, since they come from a small number of original images
-            
         """
         train_datagen = ImageDataGenerator(
             rescale=1./255,
@@ -46,7 +43,7 @@ class ConvnetsFromImageGen(object):
             horizontal_flip=True)
         return train_datagen
                     
-    def preprocessing(self, train_dir, validation_dir, augment=False):
+    def preprocessing(self, train_dir, validation_dir, batch_size=20, augment=False):
         """
             - Read the picture files.
             - Decode the JPEG content to RBG grids of pixels.
@@ -65,14 +62,14 @@ class ConvnetsFromImageGen(object):
             train_dir,
             # All images will be resized to 150x150
             target_size=(150, 150),
-            batch_size=32,
+            batch_size=batch_size,
             # Since we use binary_crossentropy loss, we need binary labels
             class_mode='binary')
 
         self.validation_generator = test_datagen.flow_from_directory(
             validation_dir,
             target_size=(150, 150),
-            batch_size=32,
+            batch_size=batch_size,
             class_mode='binary')
 
     def build_model(self):
@@ -159,7 +156,7 @@ if __name__=="__main__":
 
     train_dir = os.path.join(os.path.curdir, "data", "train")
     validation_dir = os.path.join(os.path.curdir, "data", "validation")
-    convnets.preprocessing(train_dir, validation_dir, augment=True)
+    convnets.preprocessing(train_dir, validation_dir, batch_size=32, augment=True)
 
     convnets.build_model()
     convnets.train_model(epochs=100, save=True)

@@ -92,7 +92,6 @@ class Regression(object):
         print("all_scores", self.all_scores)
         print("avg_all_scores", np.mean(self.all_scores))
         average_mae_history_lst = [np.mean([x[i] for x in self.all_mae_histories]) for i in range(num_epochs)]
-        import pdb;pdb.set_trace()
         smooth_mae_history_lst = SmoothCurve.smooth_curve(average_mae_history_lst[10:])
         
         def show_val_result(history_lst):
