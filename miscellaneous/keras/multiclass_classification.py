@@ -97,7 +97,7 @@ class MulticlassClassification(object):
             plt.plot(epochs, val_acc, 'b', label='Validation acc')
             plt.title('Training and validation accuracy')
             plt.xlabel('Epochs')
-            plt.ylabel('Loss')
+            plt.ylabel('acc')
             plt.legend()
 
             plt.show()

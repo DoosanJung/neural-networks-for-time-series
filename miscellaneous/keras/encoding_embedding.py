@@ -38,7 +38,7 @@ class OneHotEncoding(object):
 class WordEmbedding(object):
     """
     Obtaining word embeddings:
-    
+
     1. 
     Learn word embeddings jointly with the main task you care about 
     (e.g. document classification or sentiment prediction). 
@@ -49,6 +49,7 @@ class WordEmbedding(object):
     Load into your model word embeddings that were pre-computed using a different machine learning task 
     than the one you are trying to solve. 
     These are called "pre-trained word embeddings".
+    In a separate file: "word_embedding_GloVe.py"
 
     Approach 1.
     """
@@ -89,7 +90,7 @@ class WordEmbedding(object):
         self.model = models.Sequential()
         # We specify the maximum input length to our Embedding layer
         # so we can later flatten the embedded inputs
-        self.model.add(layers.Embedding(10000, self.embed_dim, input_length=self.maxlen))
+        self.model.add(layers.Embedding(self.max_features, self.embed_dim, input_length=self.maxlen))
         # After the Embedding layer, 
         # our activations have shape `(samples, maxlen, 8)`.
 
@@ -109,8 +110,6 @@ class WordEmbedding(object):
 
     def test_model(self):
         return self.model.evaluate(self.x_test, self.y_test)
-
-
 
 if __name__=="__main__":
     print("keras.__version__: ", keras.__version__)
